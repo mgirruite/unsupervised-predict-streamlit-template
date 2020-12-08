@@ -32,6 +32,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+
+
+
 # Custom Libraries
 from utils.data_loader import load_movie_titles
 from recommenders.collaborative_based import collab_model
@@ -55,7 +58,7 @@ def main():
         # Header contents
         st.write('# Movie Recommender Engine')
         st.write('### EXPLORE Data Science Academy Unsupervised Predict')
-        st.image('resources/imgs/Image_header.png',use_column_width=True)
+        st.image('resources/imgs/Image_header.png', use_column_width=True)
         # Recommender System algorithm selection
         sys = st.radio("Select an algorithm",
                        ('Content Based Filtering',
@@ -63,10 +66,10 @@ def main():
 
         # User-based preferences
         st.write('### Enter Your Three Favorite Movies')
-        movie_1 = st.selectbox('Fisrt Option',title_list[14930:15200])
-        movie_2 = st.selectbox('Second Option',title_list[25055:25255])
-        movie_3 = st.selectbox('Third Option',title_list[21100:21200])
-        fav_movies = [movie_1,movie_2,movie_3]
+        movie_1 = st.selectbox('Fisrt Option', title_list[14930:15200])
+        movie_2 = st.selectbox('Second Option', title_list[25055:25255])
+        movie_3 = st.selectbox('Third Option', title_list[21100:21200])
+        fav_movies = [movie_1, movie_2, movie_3]
 
         # Perform top-10 movie recommendation generation
         if sys == 'Content Based Filtering':
@@ -76,12 +79,11 @@ def main():
                         top_recommendations = content_model(movie_list=fav_movies,
                                                             top_n=10)
                     st.title("We think you'll like:")
-                    for i,j in enumerate(top_recommendations):
+                    for i, j in enumerate(top_recommendations):
                         st.subheader(str(i+1)+'. '+j)
                 except:
                     st.error("Oops! Looks like this algorithm does't work.\
                               We'll need to fix it!")
-
 
         if sys == 'Collaborative Based Filtering':
             if st.button("Recommend"):
@@ -90,7 +92,7 @@ def main():
                         top_recommendations = collab_model(movie_list=fav_movies,
                                                            top_n=10)
                     st.title("We think you'll like:")
-                    for i,j in enumerate(top_recommendations):
+                    for i, j in enumerate(top_recommendations):
                         st.subheader(str(i+1)+'. '+j)
                 except:
                     st.error("Oops! Looks like this algorithm does't work.\
@@ -100,10 +102,76 @@ def main():
     # -------------------------------------------------------------------
 
     # ------------- SAFE FOR ALTERING/EXTENSION -------------------
-    if page_selection == "Solution Overview":
-        st.title("Solution Overview")
-        st.write("Describe your winning approach on this page")
+    #if page_selection == "Solution Overview":
+    #    st.title("Solution Overview")
+    #    st.write("Describe your winning approach on this page")
+    
+    # DO NOT REMOVE the 'Recommender System' option below, however,
+    # you are welcome to add more options to enrich your app.
+    #page_options = ["Recommender System", "Solution Overview"]
 
+    # -------------------------------------------------------------------
+    # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
+    # -------------------------------------------------------------------
+    #page_selection = st.sidebar.selectbox("Choose Option", page_options)
+    if page_selection == "Solution Overview":
+        # Header contents
+        st.write('# Movie Recommender Engine')
+        st.write('### EXPLORE Data Science Academy Unsupervised Predict')
+        st.image('resources/imgs/Image_header.png', use_column_width=True)
+        # Recommender System algorithm selection
+        sys = st.radio("Select an algorithm",
+                       ('Content Based Filtering',
+                        'Collaborative Based Filtering'))
+
+        # User-based preferences
+        st.write('### Enter Your Three Favorite Movies')
+        movie_1 = st.selectbox('Fisrt Option', title_list[14930:15200])
+        movie_2 = st.selectbox('Second Option', title_list[25055:25255])
+        movie_3 = st.selectbox('Third Option', title_list[21100:21200])
+        #fav_movies = ['toy story (1995)', 'jumanji (1995)','grumpier old men (1995)']
+
+        fav_movies = [movie_1.lower(), movie_2.lower(), movie_3.lower()]
+
+        # Perform top-10 movie recommendation generation
+        if sys == 'Content Based Filtering':
+            if st.button("Recommend"):
+                try:
+                    with st.spinner('Crunching the numbers...'):
+                        st.write("Top Recommendations")
+                        top_recommendations = content_model(movie_list=fav_movies, top_n=10)
+
+                    x = 0
+                    for lst in top_recommendations:
+                         st.title("Recommended movies for " + str(fav_movies[x]))
+                         x=x+1
+                         for i, j in enumerate(lst):
+                             cols = st.beta_columns(2)
+                             cols[0].write(f'{i + 1}')
+                             cols[1].write(f'{j}')
+                             
+                             #st.subheader(str(i) + '. ' + str(j))
+                except Exception as e:
+                    st.error("Oops! Looks like this algorithm does't work.\
+                              We'll need to fix it!")
+                    st.error(str(e))
+
+        if sys == 'Collaborative Based Filtering':
+            if st.button("Recommend"):
+                try:
+                    with st.spinner('Crunching the numbers...'):
+                        top_recommendations = collab_model(movie_list=fav_movies,top_n=10)
+                    
+                    st.title("Recommended movies:")
+                    for i, j in enumerate(top_recommendations):
+                             cols = st.beta_columns(2)
+                             cols[0].write(f'{i + 1}')
+                             cols[1].write(f'{j}')
+                    
+                except Exception as e:
+                    st.error("Oops! Looks like this algorithm does't work.\
+                              We'll need to fix it!")
+                    st.error(str(e))
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
 
